@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import bgforget from '@/asset/image/bgforget.jpg';
 import { Button } from '@mui/material';
@@ -9,8 +9,15 @@ const Forgotpass = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
 
-    const handleSubmit = async (e: any) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    useEffect(() => {
+        setIsFormValid(emailPattern.test(email));
+    }, [email]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!email) {
@@ -20,9 +27,10 @@ const Forgotpass = () => {
 
         setIsSubmitting(true);
 
+      
         setTimeout(() => {
             setIsSubmitting(false);
-            router.push('');
+            router.push('');  
         }, 2000);
     };
 
@@ -42,7 +50,10 @@ const Forgotpass = () => {
             <div className="col d-flex justify-content-center align-items-center h-100">
                 <form onSubmit={handleSubmit} className="w-75">
                     <div className="text-center mb-3">
-                        <span>Để khôi phục mật khẩu, vui lòng đăng nhập đúng email đã dùng để đăng ký <span className="text-danger">(*)</span></span>
+                        <span>
+                            Để khôi phục mật khẩu, vui lòng đăng nhập đúng email đã dùng để đăng ký 
+                            <span className="text-danger"> (*)</span>
+                        </span>
                     </div>
                     <input
                         type="email"
@@ -53,11 +64,13 @@ const Forgotpass = () => {
                         required
                     />
                     <div className='col d-flex justify-content-center align-items-center'>
-                        <Button variant="outlined" className='mr-2'>Quay lại</Button>
+                        <Button variant="outlined" className='mr-2' onClick={() => router.back()}>
+                            Quay lại
+                        </Button>
                         <button
                             type="submit"
                             className="btn btn-primary mx-2"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || !isFormValid} 
                         >
                             {isSubmitting ? 'Gửi...' : 'Gửi'}
                         </button>
