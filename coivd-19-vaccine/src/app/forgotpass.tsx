@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import bgforget from '@/asset/image/bgforget.jpg';
-import { Button } from '@mui/material';
+import { Grid, Button, Box, Input } from '@mui/material';
 
 const Forgotpass = () => {
     const router = useRouter();
@@ -27,35 +27,46 @@ const Forgotpass = () => {
 
         setIsSubmitting(true);
 
-      
+
         setTimeout(() => {
             setIsSubmitting(false);
-            router.push('');  
+            router.push('');
         }, 2000);
     };
 
     return (
-        <div className="row align-items-start" style={{ height: '100vh' }}>
-            <div
-                className="col"
-                style={{
+        <Grid container sx={{ height: '100vh' }}>
+            <Grid
+                item
+                xs={false}
+                sm={4}
+                md={6}
+                sx={{
                     backgroundImage: `url(${bgforget.src})`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundColor: (t) =>
+                        t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    width: '100%',
-                    height: '100%'
                 }}
+            />
+            <Grid
+                xs={false}
+                sm={8}
+                md={6}
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                sx={{ display: 'flex' }}
             >
-            </div>
-            <div className="col d-flex justify-content-center align-items-center h-100">
-                <form onSubmit={handleSubmit} className="w-75">
-                    <div className="text-center mb-3">
+                <Box component="form" onSubmit={handleSubmit} className="w-75">
+                    <Grid className="text-center mb-3">
                         <span>
-                            Để khôi phục mật khẩu, vui lòng đăng nhập đúng email đã dùng để đăng ký 
+                            Để khôi phục mật khẩu, vui lòng đăng nhập đúng email đã dùng để đăng ký
                             <span className="text-danger"> (*)</span>
                         </span>
-                    </div>
-                    <input
+                    </Grid>
+                    <Input
                         type="email"
                         placeholder="user@gmail.com"
                         value={email}
@@ -63,21 +74,29 @@ const Forgotpass = () => {
                         className="form-control mb-3"
                         required
                     />
-                    <div className='col d-flex justify-content-center align-items-center'>
-                        <Button variant="outlined" className='mr-2' onClick={() => router.back()}>
+                    <Grid
+                        item
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                        sx={{ display: 'flex' }}
+                    >
+
+                        <Button variant="outlined" sx={{ marginRight: 1 }} onClick={() => router.back()}>
                             Quay lại
                         </Button>
-                        <button
+
+                        <Button
                             type="submit"
-                            className="btn btn-primary mx-2"
-                            disabled={isSubmitting || !isFormValid} 
+                            variant="contained"
+                            disabled={isSubmitting || !isFormValid}
                         >
                             {isSubmitting ? 'Gửi...' : 'Gửi'}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                        </Button>
+                    </Grid>
+                </Box>
+            </Grid>
+        </Grid>
     );
 };
 
