@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import bgforget from '@/asset/image/bgforget.jpg';
-import { Grid, Button, Box, Input } from '@mui/material';
+import { Grid, Button, Box, Input, Typography } from '@mui/material';
 
 const Forgotpass = () => {
     const router = useRouter();
@@ -61,10 +61,12 @@ const Forgotpass = () => {
             >
                 <Box component="form" onSubmit={handleSubmit} className="w-75">
                     <Grid className="text-center mb-3">
-                        <span>
+                        <Typography variant="body1" component="span">
                             Để khôi phục mật khẩu, vui lòng đăng nhập đúng email đã dùng để đăng ký
-                            <span className="text-danger"> (*)</span>
-                        </span>
+                            <Typography variant="body1" component="span" color="error">
+                                {' '}(*)
+                            </Typography>
+                        </Typography>
                     </Grid>
                     <Input
                         type="email"
@@ -82,7 +84,7 @@ const Forgotpass = () => {
                         sx={{ display: 'flex' }}
                     >
 
-                        <Button variant="outlined" sx={{ marginRight: 1 }} onClick={() => router.back()}>
+                        <Button variant="outlined" sx={{ mr: 1 }} onClick={() => router.back()}>
                             Quay lại
                         </Button>
 
