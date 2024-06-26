@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import bgforget from '@/asset/image/bgforget.jpg';
-import { Grid, Button, Box, Input, Typography, Link, Avatar, TextField, FormControlLabel, Checkbox, Paper } from '@mui/material';
+import { Grid, Button, Box, Typography, Link, TextField,  Paper } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -52,6 +52,10 @@ const Login = () => {
     };
 
     console.log(error)
+
+    const handleRegister = () => {
+        router.push('/register')
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -179,7 +183,7 @@ const Login = () => {
                         /> */}
 
                         <Grid item xs container justifyContent="flex-end">
-                            <Link href="/" variant="body2" underline="hover">
+                            <Link href="/forgotpass" variant="body2" underline="hover" >
                                 Quên mật khẩu?
                             </Link>
                         </Grid>
@@ -209,6 +213,7 @@ const Login = () => {
                             variant="outlined"
                             color="success"
                             sx={{mt: 2}}
+                            onClick={handleRegister}
                         >
                             Đăng ký
                         </Button>
