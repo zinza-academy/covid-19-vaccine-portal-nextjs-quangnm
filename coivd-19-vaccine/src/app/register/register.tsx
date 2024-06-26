@@ -15,13 +15,10 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 
 const Register = () => {
-    const router = useRouter();
     const [email, setEmail] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
     const [password, setPassword] = useState('');
     const [error, setError] = useState({ cmnd: '', email: '', password: '', form: '' });
-    const [token, setToken] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState<Dayjs | null>(dayjs('2022-04-17'));
     const [address, setAddress] = useState('');
