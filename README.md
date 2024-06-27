@@ -1,1 +1,2 @@
-![Example Image](![image](https://github.com/zinza-academy/covid-19-vaccine-portal-nextjs-quangnm/assets/101373573/a4009a45-fb7f-4cc0-815f-e103a26b9b49)
+![Example Image](![image](https://github.com/zinza-academy/covid-19-vaccine-portal-nextjs-quangnm/assets/101373573/f48e4d3b-2d58-4826-bd73-4c75180e7347)
+)
