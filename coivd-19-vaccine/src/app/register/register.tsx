@@ -1,30 +1,35 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import bgforget from '@/asset/image/bgforget.jpg';
-import { Grid, Button, Box, Typography, Link, TextField, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Grid, Button, Box, Typography, TextField, Paper } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
+import { useForm, Controller } from 'react-hook-form';
+import bgforget from '@/asset/image/bgforget.jpg';
 
 const Register = () => {
-    const [email, setEmail] = useState('');
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState({ cmnd: '', email: '', password: '', form: '' });
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<Dayjs | null>(dayjs('2022-04-17'));
+    const { control, handleSubmit, setValue, formState: { errors } } = useForm({
+        defaultValues: {
+            cmnd: '',
+            email: '',
+            password: '',
+            name: '',
+            birthDate: dayjs(), // Sử dụng ngày hiện tại hoặc một giá trị Dayjs mặc định
+            gender: '',
+            address: '',
+            districts: '',
+            wards: ''
+        }
+    });
+
     const [address, setAddress] = useState('');
-    const [districts, setDistricts] = useState('')
-    const [wards, setWard] = useState('')
-    const [cmnd, setCmnd] = useState('');
+    const [districts, setDistricts] = useState('');
 
     const addressData = [
         { id: 1, name: 'Hà Nội' },
@@ -41,7 +46,7 @@ const Register = () => {
         { id: 106, cityId: 2, name: 'Quận 3' },
         { id: 107, cityId: 3, name: 'Hải Châu' },
         { id: 108, cityId: 3, name: 'Thanh Khê' },
-        { id: 109, cityId: 3, name: 'S  ơn Trà' },
+        { id: 109, cityId: 3, name: 'Sơn Trà' },
     ];
 
     const dataWards = [
@@ -66,62 +71,11 @@ const Register = () => {
     ];
 
     const filteredDistricts = dataDistricts.filter((item) => item.cityId.toString() == address);
-
-    console.log(filteredDistricts)
-
     const filteredWards = dataWards.filter((item) => item.districtId.toString() == districts);
 
-    const handleChange = (event: SelectChangeEvent) => {
-        setAddress(event.target.value);
+    const onSubmit = (data: any) => {
+        console.log('Form Data:', data);
     };
-
-    console.log(address)
-
-    const handleChangeDistricts = (event: SelectChangeEvent) => {
-        setDistricts(event.target.value);
-    };
-
-    const handleChangeWards = (event: SelectChangeEvent) => {
-        setWard(event.target.value);
-    };
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    useEffect(() => {
-        validateForm(email, password, cmnd);
-    }, [email, password, cmnd]);
-
-
-    const validateForm = (email: any, password: any, cmnd : any) => {
-        let isValid = true;
-        let emailError = '';
-        let passwordError = '';
-        let cmndError = '';
-
-        const cmndPattern = /^\d{9}$|^\d{12}$/;
-        if (!cmndPattern.test(cmnd)) {
-            cmndError ='Số CMND/CCCD không hợp lệ. Vui lòng nhập lại.';
-            isValid = false;
-        }
-
-        if (!emailPattern.test(email)) {
-            emailError = 'Email không hợp lệ';
-            isValid = false;
-        }
-
-        if (password.trim().length < 8 || /\s/.test(password)) {
-            passwordError = 'Mật khẩu phải có ít nhất 8 ký tự và không có dấu cách';
-            isValid = false;
-        }
-
-        setError( { cmnd: cmndError, email: emailError, password: passwordError, form: '' });
-        setIsFormValid(isValid);
-    };
-
 
     return (
         <Grid container sx={{ height: '100vh' }}>
@@ -153,7 +107,6 @@ const Register = () => {
                 sx={{ display: 'flex' }}>
                 <Box
                     sx={{
-                        // my: 20,
                         mx: 20,
                         display: 'flex',
                         flexDirection: 'column',
@@ -165,7 +118,7 @@ const Register = () => {
                         Đăng kí tài khoản
                     </Typography>
 
-                    <Box component="form" noValidate sx={{ mt: 1 }}>
+                    <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleSubmit(onSubmit)}>
                         <Grid>
                             <Typography variant="body1" component="span">
                                 Số CMND/CCCD
@@ -173,16 +126,26 @@ const Register = () => {
                                     {' '}(*)
                                 </Typography>
                             </Typography>
-                            <TextField
-                                required
-                                fullWidth
-                                value={cmnd}
-                                onChange={(e) => setCmnd(e.target.value)}
-                                error={!!error.cmnd}
-                                helperText={error.cmnd}
-                                autoFocus
-                                placeholder='Số CMND/CCCD'
-                                sx={{ mb: 2 }}
+                            <Controller
+                                name="cmnd"
+                                control={control}
+                                rules={{
+                                    required: 'Vui lòng nhập số CMND/CCCD.',
+                                    pattern: {
+                                        value: /^\d{9}$|^\d{12}$/,
+                                        message: 'Số CMND/CCCD không hợp lệ. Vui lòng nhập lại.',
+                                    },
+                                }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        placeholder='Số CMND/CCCD'
+                                        error={!!errors.cmnd}
+                                        helperText={errors.cmnd?.message}
+                                        sx={{ mb: 2 }}
+                                    />
+                                )}
                             />
                         </Grid>
 
@@ -190,18 +153,27 @@ const Register = () => {
                             <Typography variant="body1" component="span">
                                 Email
                             </Typography>
-                            <TextField
-                                required
-                                fullWidth
-                                type='email'
-                                autoComplete="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                autoFocus
-                                placeholder='user@gmail.com'
-                                error={!!error.email}
-                                helperText={error.email}
-                                sx={{ mb: 2 }}
+                            <Controller
+                                name="email"
+                                control={control}
+                                rules={{
+                                    required: 'Vui lòng nhập email.',
+                                    pattern: {
+                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                        message: 'Email không hợp lệ.',
+                                    },
+                                }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        type='email'
+                                        placeholder='user@gmail.com'
+                                        error={!!errors.email}
+                                        helperText={errors.email?.message}
+                                        sx={{ mb: 2 }}
+                                    />
+                                )}
                             />
                         </Grid>
 
@@ -209,21 +181,28 @@ const Register = () => {
                             <Typography variant="body1" component="span">
                                 Mật khẩu
                             </Typography>
-                            <TextField
-                                // margin="normal"
-                                required
-                                fullWidth
+                            <Controller
                                 name="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                // label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                placeholder='password'
-                                error={!!error.password}
-                                helperText={error.password}
-                                sx={{ mb: 3 }}
+                                control={control}
+                                rules={{
+                                    required: 'Vui lòng nhập mật khẩu.',
+                                    minLength: {
+                                        value: 8,
+                                        message: 'Mật khẩu phải có ít nhất 8 ký tự.',
+                                    },
+                                    validate: value => !/\s/.test(value) || 'Mật khẩu không được chứa dấu cách.',
+                                }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        type='password'
+                                        placeholder='Mật khẩu'
+                                        error={!!errors.password}
+                                        helperText={errors.password?.message}
+                                        sx={{ mb: 2 }}
+                                    />
+                                )}
                             />
                         </Grid>
 
@@ -234,14 +213,20 @@ const Register = () => {
                                     {' '}(*)
                                 </Typography>
                             </Typography>
-                            <TextField
-                                required
-                                fullWidth
-                                // value={email}
-                                // onChange={(e) => setEmail(e.target.value)}
-                                autoFocus
-                                placeholder='Họ và tên'
-                                sx={{ mb: 2 }}
+                            <Controller
+                                name="name"
+                                control={control}
+                                rules={{ required: 'Vui lòng nhập họ và tên.' }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        placeholder='Họ và tên'
+                                        error={!!errors.name}
+                                        helperText={errors.name?.message}
+                                        sx={{ mb: 2 }}
+                                    />
+                                )}
                             />
                         </Grid>
 
@@ -254,10 +239,20 @@ const Register = () => {
                             </Typography>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DatePicker']} sx={{ mb: 2 }}>
-                                    <DatePicker
-                                        value={value}
-                                        onChange={(newValue) => setValue(newValue)}
-                                        sx={{ width: '100%' }}
+                                    <Controller
+                                        name="birthDate"
+                                        control={control}
+                                        rules={{ required: 'Vui lòng chọn ngày sinh.' }}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                {...field}
+                                                value={field.value || dayjs()} // Đảm bảo giá trị không bao giờ là null
+                                                onChange={(newValue) => {
+                                                    setValue('birthDate', newValue || dayjs()); // Nếu null, thiết lập giá trị là ngày hiện tại
+                                                }}
+                                                sx={{ width: '100%' }}
+                                            />
+                                        )}
                                     />
                                 </DemoContainer>
                             </LocalizationProvider>
@@ -270,14 +265,20 @@ const Register = () => {
                                     {' '}(*)
                                 </Typography>
                             </Typography>
-                            <TextField
-                                required
-                                fullWidth
-                                // value={email}
-                                // onChange={(e) => setEmail(e.target.value)}
-                                autoFocus
-                                placeholder='Giới tính'
-                                sx={{ mb: 2 }}
+                            <Controller
+                                name="gender"
+                                control={control}
+                                rules={{ required: 'Vui lòng nhập giới tính.' }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        placeholder='Giới tính'
+                                        error={!!errors.gender}
+                                        helperText={errors.gender?.message}
+                                        sx={{ mb: 2 }}
+                                    />
+                                )}
                             />
                         </Grid>
 
@@ -288,20 +289,30 @@ const Register = () => {
                                     {' '}(*)
                                 </Typography>
                             </Typography>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={address}
-                                // label="Age"
-                                onChange={handleChange}
-                                sx={{ width: '100%' }}
-                            >
-                                {addressData.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                            <Controller
+                                name="address"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        value={field.value}
+                                        onChange={(event) => {
+                                            setValue('address', event.target.value);
+                                            setAddress(event.target.value);
+                                            setDistricts(''); // Reset districts and wards when address changes
+                                            setValue('districts', '');
+                                            setValue('wards', '');
+                                        }}
+                                        sx={{ width: '100%' }}
+                                    >
+                                        {addressData.map((item) => (
+                                            <MenuItem key={item.id} value={item.id}>
+                                                {item.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                )}
+                            />
                         </Grid>
 
                         <Grid marginBottom={2}>
@@ -311,21 +322,29 @@ const Register = () => {
                                     {' '}(*)
                                 </Typography>
                             </Typography>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={districts}
-                                // label="Age"
-                                disabled={!address}
-                                onChange={handleChangeDistricts}
-                                sx={{ width: '100%' }}
-                            >
-                                {filteredDistricts.map((item, id) => (
-                                    <MenuItem key={id} value={item.id}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                            <Controller
+                                name="districts"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        value={field.value}
+                                        disabled={!address}
+                                        onChange={(event) => {
+                                            setValue('districts', event.target.value);
+                                            setDistricts(event.target.value);
+                                            setValue('wards', '');
+                                        }}
+                                        sx={{ width: '100%' }}
+                                    >
+                                        {filteredDistricts.map((item, id) => (
+                                            <MenuItem key={id} value={item.id}>
+                                                {item.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                )}
+                            />
                         </Grid>
 
                         <Grid marginBottom={2}>
@@ -335,33 +354,38 @@ const Register = () => {
                                     {' '}(*)
                                 </Typography>
                             </Typography>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={wards}
-                                // label="Age"
-                                placeholder='Xã Phường'
-                                disabled={!districts}
-                                onChange={handleChangeWards}
-                                sx={{ width: '100%' }}
+                            <Controller
+                                name="wards"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        value={field.value}
+                                        disabled={!districts}
+                                        onChange={(event) => setValue('wards', event.target.value)}
+                                        sx={{ width: '100%' }}
+                                    >
+                                        {filteredWards.map((item, id) => (
+                                            <MenuItem key={id} value={item.id}>
+                                                {item.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                )}
+                            />
+                        </Grid>
+                        
+                        <Grid container justifyContent={'flex-end'}>
+                            <Button
+                                variant="outlined"
+                                color="success"
+                                sx={{ mt: 2 }}
+                                type="submit"
                             >
-                                {filteredWards.map((item, id) => (
-                                    <MenuItem key={id} value={item.id}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                                Tiếp tục {' '}<ArrowForwardIcon></ArrowForwardIcon>
+                            </Button>
                         </Grid>
                     </Box>
-                    <Grid container justifyContent={'flex-end'}>
-                        <Button
-                            variant="outlined"
-                            color="success"
-                            sx={{ mt: 2 }}
-                        >
-                            Tiếp tục {' '}<ArrowForwardIcon></ArrowForwardIcon>
-                        </Button>
-                    </Grid>
                 </Box>
             </Grid>
         </Grid>
