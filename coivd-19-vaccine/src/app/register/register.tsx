@@ -149,27 +149,27 @@ const Register = () => {
                   (*)
                 </Typography>
               </Typography>
-              <Controller
-                name="cmnd"
-                control={control}
-                rules={{
-                  required: 'Vui lòng nhập số CMND/CCCD.',
-                  pattern: {
-                    value: /^\d{9}$|^\d{12}$/,
-                    message: 'Số CMND/CCCD không hợp lệ. Vui lòng nhập lại.',
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    placeholder="Số CMND/CCCD"
-                    error={!!errors.cmnd}
-                    helperText={errors.cmnd?.message}
-                    sx={{ mb: 2 }}
-                  />
-                )}
-              />
+                <Controller
+                  name="cmnd"
+                  control={control}
+                  rules={{
+                    required: 'Vui lòng nhập số CMND/CCCD.',
+                    pattern: {
+                      value: /^\d{9}$|^\d{12}$/,
+                      message: 'Số CMND/CCCD không hợp lệ. Vui lòng nhập lại.',
+                    },
+                  }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      placeholder="Số CMND/CCCD"
+                      error={!!errors.cmnd}
+                      helperText={errors.cmnd?.message}
+                      sx={{ mb: 2 }}
+                    />
+                  )}
+                />
             </Grid>
 
             <Grid>
@@ -272,9 +272,9 @@ const Register = () => {
                     render={({ field }) => (
                       <DatePicker
                         {...field}
-                        value={field.value || dayjs()} // Đảm bảo giá trị không bao giờ là null
+                        value={field.value || dayjs()} 
                         onChange={newValue => {
-                          setValue('birthDate', newValue || dayjs()); // Nếu null, thiết lập giá trị là ngày hiện tại
+                          setValue('birthDate', newValue || dayjs()); 
                         }}
                         sx={{ width: '100%' }}
                       />
