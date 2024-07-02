@@ -1,172 +1,98 @@
 'use client';
-import { Grid, Typography } from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import Diversity1OutlinedIcon from '@mui/icons-material/Diversity1Outlined';
-import Box from '@mui/material/Box';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, Box, Link, Button, IconButton, Drawer, List, ListItem, ListItemText, Menu, MenuItem, Avatar } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
 import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 
-export default function Header() {
-  const [value, setValue] = useState(0);
-  const [username, setUsername] = useState<string | null>(null);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+const Header = () => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const user = JSON.parse(localStorage.getItem('user') || 'null');
-      setUsername(user?.username || '');
-    }
-  }, []);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
+    const toggleDrawer = (open: boolean) => () => setDrawerOpen(open);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <Grid
-      container
-      sx={{
-        backgroundImage: 'linear-gradient(to right, #f44336, #0000ff)',
-        minHeight: '10vh',
-        display: 'flex',
-        alignItems: 'center',
-        color: '#fff',
-      }}
-    >
-      <Grid
-        container
-        xs={12}
-        md={4}
-        display={'flex'}
-        justifyContent={'center'}
-        alignItems={'center'}
-      >
-        <Diversity1OutlinedIcon sx={{ fontSize: '2rem', mr: 1 }} />
-        <Typography variant="body1">
-          CỔNG THÔNG TIN TIÊM CHỦNG COVID-19
-        </Typography>
-      </Grid>
-      <Grid item xs={12} md={8} display={'flex'} justifyContent={'flex-end'}>
-        <Box>
-          <BottomNavigation
-            showLabels
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-            }}
-            sx={{
-              backgroundColor: 'transparent',
-            }}
-          >
-            <BottomNavigationAction
-              label="Trang chủ"
-              sx={{
-                '& .MuiBottomNavigationAction-label': {
-                  fontSize: '2vh',
-                  whiteSpace: 'nowrap',
-                  color: 'white',
-                },
-              }}
-            />
-            <BottomNavigationAction
-              label="Đăng ký tiêm"
-              sx={{
-                '& .MuiBottomNavigationAction-label': {
-                  fontSize:'2vh' ,  
-                  color: 'white',
-                  whiteSpace: 'nowrap',
-                },
-              }}
-            />
-            <Button
-              id="basic-button"
-              aria-controls={open ? 'basic-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
-              sx={{
-                color: 'white',
-                textTransform: 'none',
-                fontSize: '2vh',
-                whiteSpace: 'nowrap',
-                ml: 3,
-              }}
-            >
-              Tra cứu <ExpandMoreOutlinedIcon />
-            </Button>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem onClick={handleClose}>
-                <PeopleOutlineOutlinedIcon sx={{ mr: 1, color: '#4a148c' }} />
-                <Box>
-                  <Typography variant="body1" sx={{ fontSize: 16 }}>
-                    Tra cứu chứng nhận tiêm
-                  </Typography>
-                  <Typography variant="body1" sx={{ fontSize: 12 }}>
-                    Cập nhật nhanh và chính xác nhất
-                  </Typography>
+    return (
+        <AppBar position="static" sx={{ background: 'linear-gradient(90deg, #E60012, #001489)' }}>
+            <Toolbar sx={{ justifyContent: 'space-between' }}>
+                <Box display="flex" alignItems="center">
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontSize: {
+                                xs: '12px', 
+                                md: '14px',
+                            },
+                        }}
+                    >
+                        CỔNG THÔNG TIN TIÊM CHỦNG COVID-19
+                    </Typography>
                 </Box>
-                <ArrowForwardOutlinedIcon sx={{ ml: 1, color: '#4a148c' }} />
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <PeopleOutlineOutlinedIcon sx={{ mr: 1, color: '#0d47a1' }} />
-                <Box>
-                  <Typography variant="body1" sx={{ fontSize: 16 }}>
-                    Tra cứu kết quả đăng ký
-                  </Typography>
-                  <Typography variant="body1" sx={{ fontSize: 12 }}>
-                    Cập nhật nhanh và chính xác nhất
-                  </Typography>
+
+                {/* Desktop Navigation */}
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>
+                    {['Trang chủ', 'Đăng ký tiêm', 'Tài liệu'].map((text) => (
+                        <Link
+                            key={text}
+                            href="#"
+                            color="inherit"
+                            underline="none"
+                            sx={{
+                                fontSize: {
+                                    xs: '12px', 
+                                    md: '14px',
+                                },
+                            }}
+                        >
+                            {text}
+                        </Link>
+                    ))}
+                    <Button onMouseEnter={handleClick} sx={{ color: 'white', textTransform: 'none', fontSize: { xs: '12px', md: '14px' } }}>
+                        Tra cứu
+                    </Button>
+                    <Menu anchorEl={anchorEl} open={open} onClose={handleClose} onMouseLeave={handleClose}>
+                        <MenuItem onClick={handleClose}>
+                            <PeopleOutlineOutlinedIcon sx={{ mr: 1, color: '#6A1B9A' }} />
+                            <Box>
+                                <Typography variant="body1" sx={{ fontSize: { xs: '12px', md: '14px' } }}>Tra cứu chứng nhận tiêm</Typography>
+                                <Typography variant="body2" color="textSecondary" sx={{ fontSize: { xs: '10px', md: '12px' } }}>Cập nhật nhanh và chính xác nhất</Typography>
+                            </Box>
+                            <ArrowForwardOutlinedIcon sx={{ ml: 'auto', color: '#6A1B9A' }} />
+                        </MenuItem>
+                        <MenuItem onClick={handleClose}>
+                            <PeopleOutlineOutlinedIcon sx={{ mr: 1, color: '#1E88E5' }} />
+                            <Box>
+                                <Typography variant="body1" sx={{ fontSize: { xs: '12px', md: '14px' } }}>Tra cứu kết quả đăng ký</Typography>
+                                <Typography variant="body2" color="textSecondary" sx={{ fontSize: { xs: '10px', md: '12px' } }}>Cập nhật nhanh và chính xác nhất</Typography>
+                            </Box>
+                            <ArrowForwardOutlinedIcon sx={{ ml: 'auto', color: '#1E88E5' }} />
+                        </MenuItem>
+                    </Menu>
+                    <Button variant="contained" color="primary" sx={{ fontSize: { xs: '12px', md: '14px' } }}>ĐĂNG NHẬP</Button>
                 </Box>
-                <ArrowForwardOutlinedIcon sx={{ ml: 1, color: '#0d47a1' }} />
-              </MenuItem>
-            </Menu>
 
-            <BottomNavigationAction
-              label="Tài liệu"
-              sx={{
-                '& .MuiBottomNavigationAction-label': {
-                  fontSize: '2vh',
-                  color: 'white',
-                  whiteSpace: 'nowrap',
-                },
-              }}
-            />
+                {/* Mobile Menu */}
+                <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                    <IconButton color="inherit" onClick={toggleDrawer(true)}>
+                        <MenuIcon />
+                    </IconButton>
+                    <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+                        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+                            <List>
+                                {['Trang chủ', 'Đăng ký tiêm', 'Tra cứu', 'Tài liệu', 'ĐĂNG NHẬP'].map((text) => (
+                                    <ListItem button key={text} component="a" href="#">
+                                        <ListItemText primary={text} sx={{ fontSize: { xs: '12px', md: '14px' } }} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Box>
+                    </Drawer>
+                </Box>
+            </Toolbar>
+        </AppBar>
+    );
+};
 
-            <BottomNavigationAction
-              label={username ? username : 'Đăng nhập'}
-              sx={{
-                '& .MuiBottomNavigationAction-label': {
-                  fontSize: '1rem',
-                  padding: 1,
-                  borderRadius: 1,
-                  color: '#0000ff',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: 'white',
-                },
-              }}
-            />
-          </BottomNavigation>
-        </Box>
-      </Grid>
-    </Grid>
-  );
-}
+export default Header;
