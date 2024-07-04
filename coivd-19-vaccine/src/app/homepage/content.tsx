@@ -14,7 +14,7 @@ import {
     TableHead,
     TableRow,
     Button,
-    InputLabel,
+    Divider,
 } from '@mui/material';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import LineChart from './component/linechart';
@@ -24,11 +24,12 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+import { ThumbUpOutlined } from '@mui/icons-material';
 
 let theme = createTheme({
     typography: {
         h5: {
-            fontSize: '1.5rem',
+            fontSize: '1.5rem', 
         },
         body1: {
             fontSize: '1rem',
@@ -211,7 +212,6 @@ function Content() {
         '&:nth-of-type(odd)': {
             backgroundColor: theme.palette.action.hover,
         },
-        // hide last border
         '&:last-child td, &:last-child th': {
             border: 0,
         },
@@ -255,13 +255,7 @@ function Content() {
         setWard(event.target.value);
     };
 
-    const filteredDistricts = dataDistricts.filter(
-        item => item.cityId.toString() == address
-    );
 
-    const filteredWards = dataWards.filter(
-        item => item.districtId.toString() == districts
-    );
 
     const handleSearch = () => {
         let filteredData = vaccinationData;
@@ -307,10 +301,10 @@ function Content() {
             >
                 <Stack
                     direction="row"
-                    sx={{
-                        border: 0,
-                        width: '100%',
-                    }}
+                    divider={<Divider orientation="vertical" flexItem />}
+                    width={'100%'}
+                    useFlexGap 
+                    flexWrap="wrap"
                 >
                     <Item>
                         <Grid container alignItems="center" spacing={2}>
@@ -397,7 +391,7 @@ function Content() {
                         </Grid>
                     </Item>
                 </Stack>
-
+                
                 <Grid item xs={12} md={12} display="flex" justifyContent="center" mt={5}>
                     <Box
                         boxShadow={4}
@@ -452,13 +446,12 @@ function Content() {
                                 onChange={handleChangeDistricts}
                                 fullWidth
                                 displayEmpty
-                                disabled={!address}
                                 sx={{ height: 35 }}
                             >
                                 <MenuItem value="" sx={{ color: 'gray' }}>
                                     Quận/Huyện
                                 </MenuItem>
-                                {filteredDistricts.map((item, id) => (
+                                {dataDistricts.map((item, id) => (
                                     <MenuItem key={id} value={item.id}>
                                         {item.name}
                                     </MenuItem>
@@ -472,7 +465,6 @@ function Content() {
                                 value={wards}
                                 onChange={handleChangeWards}
                                 fullWidth
-                                disabled={!districts}
                                 placeholder="Xã Phường"
                                 displayEmpty
                                 sx={{ height: 35 }}
@@ -480,7 +472,7 @@ function Content() {
                                 <MenuItem value="" sx={{ color: 'gray' }}>
                                     Xã/Phường
                                 </MenuItem>
-                                {filteredWards.map((item, id) => (
+                                {dataWards.map((item, id) => (
                                     <MenuItem key={id} value={item.id}>
                                         {item.name}
                                     </MenuItem>
