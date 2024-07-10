@@ -24,7 +24,7 @@ ChartJS.register(
 );
 
 interface ChartData {
-  date: string;
+  date: string; 
   quantity: number;
 }
 

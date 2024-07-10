@@ -234,7 +234,7 @@ function Content() {
 
                     {activeStep !== steps.length &&
                         (completed[activeStep] ? (
-                            <Typography variant="caption" sx={{ display: 'inline-block' }}>
+                            <Typography variant="caption" sx={{ display: 'inline-block' }} justifyContent={'center'} alignContent={'center'} color={'error'}>
                                 Step {activeStep + 1} already completed
                             </Typography>
                         ) : (
