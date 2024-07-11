@@ -421,7 +421,7 @@ const Register = () => {
                                 name="wards"
                                 control={control}
                                 render={({ field }) => (
-                                    <Select
+                                    <Select 
                                         {...field}
                                         value={field.value}
                                         disabled={!districts}
