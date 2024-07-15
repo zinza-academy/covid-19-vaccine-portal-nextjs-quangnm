@@ -3,8 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { User } from './users/entity/user.entity';
+import { User } from './entity/user.entity';
 import { UsersModule } from './users/users.module';
+import { Ward } from './entity/ward.entity';
+import { District } from './entity/district.entity';
+import { City } from './entity/city.entity';
 
 @Module({
   imports: [
@@ -15,7 +18,7 @@ import { UsersModule } from './users/users.module';
       username: 'root',
       password: '123456',
       database: 'covid',
-      entities: [User],
+      entities: [User, Ward, District, City],
       synchronize: true,
     }),
     UsersModule
