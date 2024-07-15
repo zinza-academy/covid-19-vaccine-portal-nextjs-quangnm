@@ -9,6 +9,7 @@ import {
     Min,
     IsString,
     IsOptional,
+    Matches
 } from 'class-validator';
 import { CheckLength } from './check-length.dto';
 import { Type } from 'class-transformer';
@@ -22,6 +23,7 @@ export class RegisterUserDto {
     @IsNotEmpty({ message: 'Identity Card can not be blank' })
     @CheckLength({ message: 'Identity Card Number must equal 9 or equal 12' })
     @IsString({ message: 'Identity Card must be a string' })
+    @Matches(/^[0-9]+$/, { message: 'Identity Card must contain only numbers' })
     cccd: string;
 
     @IsNotEmpty({ message: 'Email can not be blank' })

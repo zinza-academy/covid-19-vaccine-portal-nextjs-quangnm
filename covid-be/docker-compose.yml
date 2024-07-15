@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   my-sql: 
     image: mysql:8.0
