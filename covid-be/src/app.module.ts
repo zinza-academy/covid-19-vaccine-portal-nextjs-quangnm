@@ -8,6 +8,9 @@ import { UsersModule } from './users/users.module';
 import { Ward } from './entity/ward.entity';
 import { District } from './entity/district.entity';
 import { City } from './entity/city.entity';
+import { VaccinationSite } from './entity/vaccination_site.entty';
+import { Registration } from './entity/vaccination_registration.entity';
+import { Role } from './entity/role.entity';
 
 @Module({
   imports: [
@@ -18,7 +21,7 @@ import { City } from './entity/city.entity';
       username: 'root',
       password: '123456',
       database: 'covid',
-      entities: [User, Ward, District, City],
+      entities: [User, Ward, District, City, VaccinationSite, Registration, Role],
       synchronize: true,
     }),
     UsersModule
