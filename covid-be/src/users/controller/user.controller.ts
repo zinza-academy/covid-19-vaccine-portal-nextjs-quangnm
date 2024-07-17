@@ -11,7 +11,7 @@ import {
     BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
-import { User } from '../entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { IsNotEmpty, IsEmail, MaxLength, validate } from 'class-validator';
 import { RegisterUserDto } from '../dto/update-user.dto';
 
@@ -50,6 +50,11 @@ export class UsersController {
                 .map((err) => Object.values(err.constraints).join(', '))
                 .join(', ');
             throw new BadRequestException(errorMessages);
+        }
+
+        const existingUser = await this.usersService.findByCccd(createUserDto.cccd);
+        if (existingUser) {
+            throw new BadRequestException('CCCD already exists');
         }
 
         try {
