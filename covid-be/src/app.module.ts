@@ -14,6 +14,7 @@ import { Role } from './entity/role.entity';
 import { LocationModule } from './location/location.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { VacctinationRegistrationModule } from './vaccination_registration/vaccination_registration.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -29,7 +30,8 @@ import { ConfigModule } from '@nestjs/config';
     }),
     UsersModule,
     LocationModule,
-    AuthModule
+    AuthModule,
+    VacctinationRegistrationModule
   ],
   controllers: [AppController],
   providers: [AppService],

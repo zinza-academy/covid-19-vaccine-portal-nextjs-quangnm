@@ -16,6 +16,9 @@ export class Registration {
   priority_group: string;
 
   @Column()
+  health_insurance: string;
+
+  @Column()
   user_id: number;
 
   @Column()
