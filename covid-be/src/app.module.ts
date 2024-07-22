@@ -14,7 +14,8 @@ import { Role } from './entity/role.entity';
 import { LocationModule } from './location/location.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { VacctinationRegistrationModule } from './vaccination_registration/vaccination_registration.module';
+import { VaccinationRegistrationModule } from './vaccination_registration/vaccination_registration.module';
+import { VaccinationSiteModule } from './vaccination_site/vaccination_site.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -26,12 +27,14 @@ import { VacctinationRegistrationModule } from './vaccination_registration/vacci
       password: '123456',
       database: 'covid',
       entities: [User, Ward, District, City, VaccinationSite, Registration, Role],
+      migrations: [__dirname + 'src/entity/migrations/**/*{.ts,.js}'],
       synchronize: true,
     }),
     UsersModule,
     LocationModule,
     AuthModule,
-    VacctinationRegistrationModule
+    VaccinationRegistrationModule,
+    VaccinationSiteModule
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -39,6 +42,6 @@ import { VacctinationRegistrationModule } from './vaccination_registration/vacci
 
 
 export class AppModule {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) { }
 }
 
