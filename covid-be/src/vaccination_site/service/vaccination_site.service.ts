@@ -3,10 +3,12 @@ import { VaccinationSite } from 'src/entity/vaccination_site.entty';
 import { Repository } from 'typeorm';
 import { VaccinationSiteDto } from '../dto/vaccination_site.dto';
 import { UpdateVaccinationSiteDto } from '../dto/update_vaccin_site.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class VaccinationSiteService {
     constructor(
+        @InjectRepository(VaccinationSite)
         private readonly vaccinationSiteRepository: Repository<VaccinationSite>,
     ) { }
 
