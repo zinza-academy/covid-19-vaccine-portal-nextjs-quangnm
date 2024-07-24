@@ -51,4 +51,3 @@ import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
 export class AppModule {
   constructor(private dataSource: DataSource) { }
 }
-
