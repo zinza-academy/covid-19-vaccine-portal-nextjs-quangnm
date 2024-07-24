@@ -55,15 +55,6 @@ export class RegisterUserDto {
     ward_id: number;
 
     @IsOptional()
-    @IsNumber({}, { message: 'City Id must be a number' })
-    cityId?: number;
-
-    @IsOptional()
-    @IsNumber({}, { message: 'District Id must be a number' })
-    districtId?: number;
-
-    
-    @IsOptional()
     @IsNumber({}, { message: 'District Id must be a number' })
     role_id?: number;
 }

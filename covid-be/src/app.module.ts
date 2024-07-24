@@ -19,6 +19,7 @@ import { VaccinationSiteModule } from './vaccination_site/vaccination_site.modul
 import { ConsoleModule } from 'nestjs-console';
 import { ImportLocationDataCommand } from './datalocations/import_datalocation';
 import { DatabaseConfig } from './entity/config/data.config';
+import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,7 +39,9 @@ import { DatabaseConfig } from './entity/config/data.config';
     LocationModule,
     VaccinationRegistrationModule,
     VaccinationSiteModule,
-    ConsoleModule
+    ConsoleModule,
+    ForgotPasswordModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService, ImportLocationDataCommand],
