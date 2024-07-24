@@ -52,7 +52,7 @@ export class RegisterUserDto {
     @IsNotEmpty({ message: 'Ward Id can not be blank' })
     @IsNumber({}, { message: 'Ward Id must be a number' })
     @Min(1, { message: 'Ward Id must be at least 1' })
-    wardId: number;
+    ward_id: number;
 
     @IsOptional()
     @IsNumber({}, { message: 'City Id must be a number' })
@@ -61,4 +61,9 @@ export class RegisterUserDto {
     @IsOptional()
     @IsNumber({}, { message: 'District Id must be a number' })
     districtId?: number;
+
+    
+    @IsOptional()
+    @IsNumber({}, { message: 'District Id must be a number' })
+    role_id?: number;
 }

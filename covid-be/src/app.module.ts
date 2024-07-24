@@ -11,9 +11,13 @@ import { City } from './entity/city.entity';
 import { VaccinationSite } from './entity/vaccination_site.entty';
 import { Registration } from './entity/vaccination_registration.entity';
 import { Role } from './entity/role.entity';
-
+import { LocationModule } from './location/location.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { VacctinationRegistrationModule } from './vaccination_registration/vaccination_registration.module';
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -24,7 +28,10 @@ import { Role } from './entity/role.entity';
       entities: [User, Ward, District, City, VaccinationSite, Registration, Role],
       synchronize: true,
     }),
-    UsersModule
+    UsersModule,
+    LocationModule,
+    AuthModule,
+    VacctinationRegistrationModule
   ],
   controllers: [AppController],
   providers: [AppService],
