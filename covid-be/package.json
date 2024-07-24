@@ -18,10 +18,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js -f src/typeorm/ormconfig.ts",
-    "migraition:generate": "npm run build && npm run typeorm migraition:generate -- -n",
-    "migraition:run": "npm run build && npm run typeorm migraition:run",
-    "console:prod": "node ./dist/src/console.js",
+    "typeorm": "ts-node --require tsconfig-paths/register ./node_modules/typeorm/cli",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/entity/config/ormconfig.ts",
+    "migration:generate": "npm run typeorm -- -d ./src/entity/config/ormconfig.ts migration:generate ./entity/migrations/%npm_config_name%",
+    "migration:create": "npm run typeorm -- migration:create ./src/entity/migrations/$npm_config_name",
+    "migration:revert": "npm run typeorm -- -d ./src/entity/config/ormconfig.ts migration:revert",
+    "migration:show": "npm run typeorm -- migration:show -d ./src/entity/config/ormconfig.ts",
     "console:dev": "ts-node -r tsconfig-paths/register ./src/console.ts"
   },
   "dependencies": {
