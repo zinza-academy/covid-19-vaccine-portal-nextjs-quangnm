@@ -10,4 +10,4 @@ import { VacctinationRegistrationController } from "./controller/vaccination_reg
     controllers: [VacctinationRegistrationController]
 })
 
-export class VacctinationRegistrationModule {}
+export class VaccinationRegistrationModule {}

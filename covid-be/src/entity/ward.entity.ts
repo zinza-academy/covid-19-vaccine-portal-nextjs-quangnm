@@ -31,5 +31,5 @@ export class Ward {
   users: User[];
 
   @OneToMany(() => VaccinationSite, (vaccination_site) => vaccination_site.ward)
-  vaccination_sites = VaccinationSite;
+  vaccination_sites: VaccinationSite[];
 }

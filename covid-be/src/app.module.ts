@@ -13,32 +13,39 @@ import { Registration } from './entity/vaccination_registration.entity';
 import { Role } from './entity/role.entity';
 import { LocationModule } from './location/location.module';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-import { VacctinationRegistrationModule } from './vaccination_registration/vaccination_registration.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { VaccinationRegistrationModule } from './vaccination_registration/vaccination_registration.module';
+import { VaccinationSiteModule } from './vaccination_site/vaccination_site.module';
+import { ConsoleModule } from 'nestjs-console';
+import { ImportLocationDataCommand } from './datalocations/import_datalocation';
+import { DatabaseConfig } from './entity/config/data.config';
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'covid',
-      entities: [User, Ward, District, City, VaccinationSite, Registration, Role],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      load: [DatabaseConfig],
     }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        ...configService.get('database'),
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forFeature([City, District, Ward, Role, VaccinationSite, Registration, User]),
     UsersModule,
     LocationModule,
-    AuthModule,
-    VacctinationRegistrationModule
+    VaccinationRegistrationModule,
+    VaccinationSiteModule,
+    ConsoleModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ImportLocationDataCommand],
 })
 
 
 export class AppModule {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) { }
 }
 
