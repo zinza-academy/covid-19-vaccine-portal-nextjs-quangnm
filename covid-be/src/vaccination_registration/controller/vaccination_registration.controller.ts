@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { VacctinationRegistrationService } from "../service/vaccination_registration.service";
-import { JwtAuthGuard } from "src/auth/local-auth.guard";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { VaccineRegistrationDto } from "../dto/vaccination_registration.dto";
 
 @Controller('registration')

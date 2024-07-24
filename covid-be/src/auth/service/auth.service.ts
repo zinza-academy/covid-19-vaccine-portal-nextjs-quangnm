@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserInterface } from '../interface/user.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -19,11 +20,13 @@ export class AuthService {
             where: { email },
             relations: ['ward', 'ward.district', 'ward.district.city'],
         });
-        if (user && user.password === pass) {
-            const { password, ...result } = user;
-            return result;
-        }
-        return null;
+        if (user) {
+            const match =  bcrypt.compareSync(pass, user.password);
+            if (match) {
+              return user;
+            }
+          }
+          return null;
     }
 
     async login(user: UserInterface) {
