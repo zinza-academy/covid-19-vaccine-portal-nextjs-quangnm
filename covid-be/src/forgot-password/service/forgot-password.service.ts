@@ -29,9 +29,9 @@ export class ForgotPasswordService {
                 ...user,
                 reset_pass_token: token,
             });
-            const link = `https://your-domain.com/reset-password?${token}`;
+            const link = `${process.env.DOMAIN_FORGOT_PASSWORD}?${token}`;
             await this.mailerService.sendMail({
-                to: 'kinglovee2002@gmail.com',
+                to: 'ngominhquang12a2nl@gmail.com',
                 from: process.env.MAIL_AUTH_EMAIL,
                 subject: 'Password Reset',
                 html: `Follow <a href=${link}>here</a> to reset your password`,
