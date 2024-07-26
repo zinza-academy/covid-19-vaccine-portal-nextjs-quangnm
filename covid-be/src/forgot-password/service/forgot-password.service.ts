@@ -1,26 +1,75 @@
-import { Injectable } from '@nestjs/common';
-import { CreateForgotPasswordDto } from '../dto/create-forgot-password.dto';
-import { UpdateForgotPasswordDto } from '../dto/update-forgot-password.dto';
+import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/entity/user.entity';
+import { Repository } from 'typeorm';
+import { MailerService } from '@nestjs-modules/mailer';
+import * as dotenv from 'dotenv';
+import * as bcrypt from 'bcrypt';
 
+dotenv.config();
 @Injectable()
 export class ForgotPasswordService {
-  create(createForgotPasswordDto: CreateForgotPasswordDto) {
-    return 'This action adds a new forgotPassword';
-  }
+    constructor(
+        private jwtService: JwtService,
 
-  findAll() {
-    return `This action returns all forgotPassword`;
-  }
+        private mailerService: MailerService,
 
-  findOne(id: number) {
-    return `This action returns a #${id} forgotPassword`;
-  }
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+    ) { }
 
-  update(id: number, updateForgotPasswordDto: UpdateForgotPasswordDto) {
-    return `This action updates a #${id} forgotPassword`;
-  }
+    async forgotPassword(email: string) {
+        const user = await this.userRepository.findOne({ where: { email } });
 
-  remove(id: number) {
-    return `This action removes a #${id} forgotPassword`;
-  }
+        if (user) {
+            const payload = { email: user.email, id: user.id };
+            const token = this.jwtService.sign(payload);
+            this.userRepository.update(user, {
+                ...user,
+                reset_pass_token: token,
+            });
+            const link = `${process.env.DOMAIN_FORGOT_PASSWORD}?${token}`;
+            await this.mailerService.sendMail({
+                to: 'ngominhquang12a2nl@gmail.com',
+                from: process.env.MAIL_AUTH_EMAIL,
+                subject: 'Password Reset',
+                html: `Follow <a href=${link}>here</a> to reset your password`,
+            });
+            return {
+                message: 'Please check your mail',
+                token: token
+            };
+        } else {
+            return new UnauthorizedException('Email does not exist', '404');
+        }
+    }
+
+    async resetPassword(token: string) {
+        const newPassword = Math.random().toString(36).slice(-8);
+        const userHaveToken = await this.userRepository.findOne({
+            where: { reset_pass_token: token },
+        });
+        if (userHaveToken) {
+            try {
+                this.jwtService.verify(token);
+                const hashNewPassword = bcrypt.hashSync(
+                    newPassword,
+                    bcrypt.genSaltSync(),
+                );
+                await this.userRepository.update(userHaveToken, {
+                    ...userHaveToken,
+                    password: hashNewPassword,
+                });
+                return {
+                    password: newPassword,
+                    message: 'Reset password success',
+                };
+            } catch (error) {
+                return error;
+            }
+        } else {
+            return new UnauthorizedException('Token is not exist', '404');
+        }
+    }
 }

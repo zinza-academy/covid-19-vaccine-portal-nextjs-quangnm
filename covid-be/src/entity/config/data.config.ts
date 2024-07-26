@@ -8,6 +8,6 @@ export const DatabaseConfig = registerAs('database', (): TypeOrmModuleOptions =>
   username: process.env.MYSQL_USERNAME,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-  synchronize: false,
+  synchronize: true,
   autoLoadEntities: true,
 }))
