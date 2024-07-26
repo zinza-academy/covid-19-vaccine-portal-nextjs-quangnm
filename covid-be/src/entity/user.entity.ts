@@ -36,6 +36,9 @@ export class User {
   @Column()
   role_id: number;
 
+  @Column()
+  reset_pass_token: string;
+
   @ManyToOne(() => Ward, (ward) => ward.users, {
     onDelete: 'CASCADE',
   })
