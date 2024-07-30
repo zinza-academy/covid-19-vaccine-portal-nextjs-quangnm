@@ -2,11 +2,7 @@
 import axios from 'axios';
 
 const BASE_URL = process.env.API_URL;
-const user = JSON.parse(localStorage.getItem('persist:root') || '{}')?.user;
-const userParse = user && JSON.parse(user).value;
-const ACCESS_TOKEN = userParse?.access_token;
-console.log(user)
-console.log(userParse)
+const ACCESS_TOKEN = '';
 
 
 export const axiosInstance = axios.create({
