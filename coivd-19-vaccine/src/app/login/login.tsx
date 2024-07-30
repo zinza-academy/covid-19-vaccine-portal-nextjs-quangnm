@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import bgforget from '@/asset/image/bgforget.jpg';
@@ -13,10 +12,12 @@ import {
     Paper,
     Backdrop,
     CircularProgress,
+    Alert
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { axiosInstance } from '@/requestMethod';
 
 const schema = yup.object().shape({
     email: yup
@@ -33,8 +34,8 @@ const schema = yup.object().shape({
 const Login = () => {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [token, setToken] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleClose = () => {
         setOpen(false);
@@ -65,35 +66,22 @@ const Login = () => {
 
     const onSubmit = async (data: { email: string; password: string }) => {
         setIsSubmitting(true);
+        setError(null); 
         if (!isValid) {
             return;
         }
 
         try {
-            const fakeApiResponse = await new Promise<{ token: string }>(
-                (resolve, reject) =>
-                    setTimeout(() => {
-                        const isSuccess = true; 
-                        if (isSuccess) {
-                            handleOpen();
-                            resolve({ token: 'sample_token_123456' }); 
-                        } else {
-                            reject(
-                                new Error('Đăng nhập không thành công. Vui lòng thử lại.')
-                            );
-                        }
-                    }, 2000)
-            );
-
-            const { token } = fakeApiResponse;
-            localStorage.setItem('token', token);
-            setToken(token);
-
-            router.push('/user');
+            handleOpen();
+            const response = await axiosInstance.post('/auth/login', data);
+            localStorage.setItem('token', response.data.token);
+            
+            router.push('/home');
         } catch (err: any) {
-            console.error(err.message || 'Đăng nhập không thành công. Vui lòng thử lại.');
+            setError('Đăng nhập không thành công. Vui lòng thử lại.');
         } finally {
             setIsSubmitting(false);
+            handleClose();
         }
     };
 
@@ -139,6 +127,11 @@ const Login = () => {
                     <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
                         Đăng Nhập Vào Tài Khoản
                     </Typography>
+                    {error && (
+                        <Alert severity="error" sx={{ mb: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
                     <Box
                         component="form"
                         noValidate
