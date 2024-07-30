@@ -1,19 +1,58 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from './features/counterSlice';
-import { userApi } from './services/usersApi';
-import { setupListeners } from '@reduxjs/toolkit/dist/query';
+import {
+    configureStore,
+    ThunkAction,
+    Action,
+    combineReducers
+} from '@reduxjs/toolkit';
+import {
+    persistStore,
+    persistReducer,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import userReducer from '../features/user/userSlice';
 
-export const store = configureStore({
-  reducer: {
-    counterReducer,
-    [userApi.reducerPath]: userApi.reducer,
-  },
-  devTools: process.env.NODE_ENV !== 'production',
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({}).concat([userApi.middleware]),
+const persistConfig = {
+    key: 'root',
+    version: 1,
+    storage,
+    whitelist: ['user']
+};
+
+const rootReducer = combineReducers({
+    login: userReducer
 });
 
-setupListeners(store.dispatch);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export type RootState = ReturnType<typeof store.getState>;
+export const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [
+                    FLUSH,
+                    REHYDRATE,
+                    PAUSE,
+                    PERSIST,
+                    PURGE,
+                    REGISTER
+                ]
+            }
+        })
+});
+
+export let persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppThunk<ReturnType = void> = ThunkAction<
+    ReturnType,
+    RootState,
+    unknown,
+    Action<string>
+>;

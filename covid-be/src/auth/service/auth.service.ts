@@ -18,7 +18,7 @@ export class AuthService {
     async validateUser(email: string, pass: string): Promise<any> {
         const user = await this.userRepository.findOne({
             where: { email },
-            relations: ['ward', 'ward.district', 'ward.district.city'],
+            relations: ['ward', 'ward.district', 'ward.district.city', 'role'],
         });
         if (user) {
             const match =  bcrypt.compareSync(pass, user.password);
