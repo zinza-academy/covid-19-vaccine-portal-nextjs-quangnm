@@ -17,7 +17,8 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { axiosInstance } from '@/requestMethod';
+import { loginAsync } from '@/features/user/userSlice';
+import { useAppDispatch } from '@/redux/hooks';
 
 const schema = yup.object().shape({
     email: yup
@@ -36,6 +37,7 @@ const Login = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
 
     const handleClose = () => {
         setOpen(false);
@@ -73,10 +75,10 @@ const Login = () => {
 
         try {
             handleOpen();
-            const response = await axiosInstance.post('/auth/login', data);
-            localStorage.setItem('token', response.data.token);
-            
-            router.push('/home');
+            const response = dispatch(loginAsync(data)).unwrap();
+
+            localStorage.setItem('token', (await response).token);
+            router.push('/home');   
         } catch (err: any) {
             setError('Đăng nhập không thành công. Vui lòng thử lại.');
         } finally {
