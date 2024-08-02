@@ -12,8 +12,10 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll() {
+    return await this.usersRepository.find({
+      relations: ['ward', 'ward.district', 'ward.district.city'],
+    });
   }
 
   async findOne(id: number): Promise<User | null> {
@@ -38,6 +40,10 @@ export class UsersService {
 
   async findByCccd(cccd: string): Promise<User | undefined> {
     return await this.usersRepository.findOneBy({ cccd });
+  }
+
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.usersRepository.findOneBy({ email });
   }
 
   async update(id: number, updateUserDto: RegisterUserDto): Promise<User> {
