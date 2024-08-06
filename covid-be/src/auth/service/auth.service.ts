@@ -1,5 +1,5 @@
+import { UsersService } from './../../users/services/users.service';
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../../users/services/users.service';
 import { User } from '../../entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
@@ -10,40 +10,57 @@ import { LoginUserDto } from '../dto/login.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-        private jwtService: JwtService,
-    ) { }
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private jwtService: JwtService,
 
-    async validateUser(email: string, pass: string): Promise<any> {
-        const user = await this.userRepository.findOne({
-            where: { email },
-            relations: ['ward', 'ward.district', 'ward.district.city', 'role'],
-        });
-        if (user) {
-            const match =  bcrypt.compareSync(pass, user.password);
-            if (match) {
-              return user;
-            }
-          }
-          return null;
+    private usersService: UsersService,
+  ) {}
+
+  async validateUser(email: string, pass: string): Promise<any> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+      relations: ['ward', 'ward.district', 'ward.district.city', 'role'],
+    });
+    if (user) {
+      const match = bcrypt.compareSync(pass, user.password);
+      if (match) {
+        return user;
+      }
+    }
+    return null;
+  }
+
+  async login(user: LoginUserDto) {
+    const foundUser = await this.usersService.findByEmail(user.email);
+    if (!foundUser) {
+      throw new Error('Invalid credentials');
     }
 
-    async login(user: LoginUserDto) {
-        const res = { email: user.email, password: user.password };
-        const token = this.jwtService.sign(res);
-        const { password, ...userInfo } = user;
-        return {
-            user: userInfo,
-            token,
-        };
+    if (user.password !== foundUser.password) {
+      throw new Error('Invalid credentials');
     }
 
-    logout() {
-        return {
-            status: '200',
-            message: 'Logout successful',
-        };
-    }
+    const payload = {
+      id: foundUser.id,
+      email: foundUser.email,
+      role_id: foundUser.role_id,
+    };
+
+    const access_token = this.jwtService.sign(payload);
+    const { password, ...userInfo } = user;
+
+    return {
+      user: userInfo,
+      access_token,
+    };
+  }
+
+  logout() {
+    return {
+      status: '200',
+      message: 'Logout successful',
+    };
+  }
 }

@@ -10,7 +10,7 @@ const dataSource = new DataSource({
   username: process.env.MYSQL_USERNAME,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-  synchronize: false,
+  synchronize: true,
   migrations: [__dirname + '/../migrations/*.{ts,js}'],
   entities: [__dirname + '/../entity/**/*.{ts,js}'],
   subscribers: [__dirname + '/../subscriber/*.{ts,js}'],

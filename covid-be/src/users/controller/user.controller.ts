@@ -9,16 +9,20 @@ import {
     ParseIntPipe,
     NotFoundException,
     BadRequestException,
+    UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { User } from '../../entity/user.entity';
 import { IsNotEmpty, IsEmail, MaxLength, validate } from 'class-validator';
 import { RegisterUserDto } from '../dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AdminRoleGuard } from 'src/custom/roleAdmin.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
+    @UseGuards(JwtAuthGuard, AdminRoleGuard)
     @Get()
     async findAll(): Promise<User[]> {
         return this.usersService.findAll();
@@ -63,7 +67,7 @@ export class UsersController {
             throw new BadRequestException(error.message);
         }
     }
-
+    
     @Patch(':id')
     async update(
         @Param('id', ParseIntPipe) id: number,
