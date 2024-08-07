@@ -1,3 +1,4 @@
+import { registerSlice } from './../features/user/registerSlice';
 import {
     configureStore,
     ThunkAction,
@@ -17,6 +18,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 import userReducer from '../features/user/userSlice';
 import forgotPasswordReducer from '../features/user/forgotpassSlice';
+import registerReduces from '../features/user/registerSlice';
 
 const persistConfig = {
     key: 'root',
@@ -27,7 +29,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     login: userReducer,
-    forgotPassword: forgotPasswordReducer
+    forgotPassword: forgotPasswordReducer,
+    register: registerReduces
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
