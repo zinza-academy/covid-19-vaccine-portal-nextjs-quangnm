@@ -11,7 +11,6 @@ import {
     IsOptional,
     Matches
 } from 'class-validator';
-import { CheckLength } from './check-length.dto';
 import { Type } from 'class-transformer';
 
 enum GenderType {
@@ -21,9 +20,8 @@ enum GenderType {
 
 export class RegisterUserDto {
     @IsNotEmpty({ message: 'Identity Card can not be blank' })
-    @CheckLength({ message: 'Identity Card Number must equal 9 or equal 12' })
+    @Matches(/^\d{9}$|^\d{12}$/,{message: 'CMND/CCCD phải có 9 hoặc 12 số'})
     @IsString({ message: 'Identity Card must be a string' })
-    @Matches(/^[0-9]+$/, { message: 'Identity Card must contain only numbers' })
     cccd: string;
 
     @IsNotEmpty({ message: 'Email can not be blank' })
@@ -57,4 +55,7 @@ export class RegisterUserDto {
     @IsOptional()
     @IsNumber({}, { message: 'District Id must be a number' })
     role_id?: number;
+
+    @IsOptional()
+    reset_pass_token?: string;
 }

@@ -77,8 +77,9 @@ const Login = () => {
             handleOpen();
             const response = dispatch(loginAsync(data)).unwrap();
 
-            localStorage.setItem('token', (await response).token);
-            router.push('/home');   
+            localStorage.setItem('token', (await response).access_token);
+            localStorage.setItem('user', JSON.stringify((await response).user));
+            router.push('/homepage');   
         } catch (err: any) {
             setError('Đăng nhập không thành công. Vui lòng thử lại.');
         } finally {

@@ -51,7 +51,7 @@ interface City {
 }
 
 interface FormData {
-    cmnd: string;
+    cccd: string;
     email: string;
     password: string;
     name: string;
@@ -61,10 +61,11 @@ interface FormData {
     district_id: number | string;
     ward_id: number | string;
     role_id: number | string;
+    reset_pass_token: string
 }
 
 const defaultValues = {
-    cmnd: '',
+    cccd: '',
     email: '',
     password: '',
     name: '',
@@ -73,17 +74,18 @@ const defaultValues = {
     city_id: 0,
     district_id: 0,
     ward_id: 0,
-    role_id: 2
+    role_id: 2,
+    reset_pass_token: ''
 };
 
 const schema = yup
     .object({
-        cmnd: yup
+        cccd: yup
         .string()
-        .required('CMND là bắt buộc')
-        .matches(/^\d+$/, 'CMND phải chỉ chứa các số') 
-        .min(9, 'CMND phải có ít nhất 9 ký tự') 
-        .max(12, 'CMND không được vượt quá 12 ký tự'), 
+        .required('cccd là bắt buộc')
+        .matches(/^\d+$/, 'cccd phải chỉ chứa các số') 
+        .min(9, 'cccd phải có ít nhất 9 ký tự') 
+        .max(12, 'cccd không được vượt quá 12 ký tự'), 
         email: yup.string().email().required(),
         password: yup
             .string()
@@ -163,9 +165,10 @@ const Register = () => {
         );
     }, [districtId, districts]);
 
-    const onSubmit = (data: any) => {
-        console.log('Form Data:', data);
-    };
+    const onSubmit = (data: FormData) => {
+        const { city_id, district_id, ...registerInfo } = data;
+        dispatch(registerAsync(registerInfo));
+      };
 
     return (
         <Grid container sx={{ height: '100vh' }}>
@@ -230,7 +233,7 @@ const Register = () => {
                                 </Typography>
                             </Typography>
                             <Controller
-                                name="cmnd"
+                                name="cccd"
                                 control={control}
                                 render={({ field, fieldState: { error } }) => (
                                     <TextField

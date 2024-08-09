@@ -22,8 +22,8 @@ const initialState: UserState = {
 
 export const loginAsync = createAsyncThunk(
   'user/login',
-  async (loginInfo: UserInfo): Promise<{ token: string; user: any }> => {
-    const res = await axiosInstance.post<{ token: string; user: any }>('/auth/login', loginInfo);
+  async (loginInfo: UserInfo): Promise<{ access_token: string; user: any }> => {
+    const res = await axiosInstance.post<{ access_token: string; user: any }>('/auth/login', loginInfo);
     return res.data;
   }
 );
@@ -42,7 +42,7 @@ export const userSlice = createSlice({
         state.status = 'succeeded';
         state.loading = false;
         state.value = action.payload.user;
-        state.token = action.payload.token;
+        state.token = action.payload.access_token;
       })
       .addCase(loginAsync.rejected, (state) => {
         state.status = 'failed';
