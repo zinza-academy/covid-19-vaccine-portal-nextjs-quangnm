@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '../../requestMethod';
 
 export interface RegisterInfo {
-    cmnd: string;
+    cccd: string;
     email: string;
     password: string;
     name: string;
@@ -10,6 +10,7 @@ export interface RegisterInfo {
     gender: string;
     ward_id: number | string;
     role_id: number | string;
+    reset_pass_token: string
 }
 
 export interface RegisterState {
@@ -21,14 +22,15 @@ export interface RegisterState {
 
 const initialState: RegisterState = {
     value: {
-        cmnd: '',
+        cccd: '',
         email: '',
         password: '',
         name: '',
         dob: '',
         gender: '',
         ward_id: 0,
-        role_id: 0
+        role_id: 0,
+        reset_pass_token: ''
     },
     status: 'idle',
     loading: false,
@@ -43,7 +45,7 @@ export const registerAsync = createAsyncThunk(
     ): Promise<RegisterInfo | unknown> => {
         try {
             const res = await axiosInstance.post<RegisterInfo>(
-                '/auth/register',
+                '/users',
                 registerInfo
             );
             return res.data;
